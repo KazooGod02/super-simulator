@@ -1,0 +1,132 @@
+/* SUPER SIMULATOR · la interfaz se escala con --u (1 pixel del juego) */
+:root { --u: 1px; --ink: #f3efff; --muted: #b0a7dc; --dim: #7d73b0; --panel: #16122e; --panel2: #2a2254; --line: #3d3478; --gold: #ffd23f; --cero: #ff2bd6; --night: #07051a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--night); overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+body { font-family: "VT323", ui-monospace, monospace; color: var(--ink); }
+[hidden] { display: none !important; }
+
+#stage { position: absolute; }
+#game { width: 100%; height: 100%; display: block; image-rendering: pixelated; image-rendering: crisp-edges; background: var(--night); }
+#ui { position: absolute; inset: 0; pointer-events: none; overflow: hidden; font-size: calc(var(--u) * 10); line-height: 1.1; }
+#ui canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+
+kbd {
+  font-family: "Press Start 2P", ui-monospace, monospace; font-size: calc(var(--u) * 5);
+  background: var(--ink); color: var(--panel); padding: calc(var(--u) * 1.5) calc(var(--u) * 2);
+  margin: 0 calc(var(--u) * 1); vertical-align: middle; box-shadow: 0 var(--u) 0 var(--dim); white-space: nowrap;
+}
+
+/* ---------- título ---------- */
+#titleLogo { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--u) * 20); gap: calc(var(--u) * 5); text-align: center; }
+.studio { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 5); letter-spacing: calc(var(--u) * 1.5); color: var(--muted); }
+.super { display: flex; gap: calc(var(--u) * 2); font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 18); }
+.super span { text-shadow: calc(var(--u) * 2) calc(var(--u) * 2) 0 var(--night); animation: hop 1.4s steps(1) infinite; animation-delay: calc(var(--i) * .14s); }
+.super span:nth-child(1) { color: #ff7a1a; } .super span:nth-child(2) { color: #ffd23f; } .super span:nth-child(3) { color: #2ee6d6; } .super span:nth-child(4) { color: #ff4fa3; } .super span:nth-child(5) { color: #6fb7ff; }
+.sim { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 24); color: var(--ink); text-shadow: calc(var(--u) * 2) calc(var(--u) * 2) 0 #ff4fa3, calc(var(--u) * 4) calc(var(--u) * 4) 0 #2ee6d6, calc(var(--u) * 6) calc(var(--u) * 6) 0 var(--night); }
+.phase { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 6); color: var(--gold); margin-top: calc(var(--u) * 4); text-shadow: var(--u) var(--u) 0 var(--night); }
+.press { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 7); margin-top: calc(var(--u) * 26); animation: blink 1s steps(2) infinite; text-shadow: var(--u) var(--u) 0 var(--night); }
+@keyframes hop { 0% { transform: translateY(0); } 15% { transform: translateY(calc(var(--u) * -3)); } 30% { transform: translateY(0); } }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- HUD ---------- */
+#hud { position: absolute; inset: 0; }
+.hud-l { position: absolute; left: calc(var(--u) * 6); top: calc(var(--u) * 5); display: flex; flex-direction: column; gap: calc(var(--u) * 3); }
+#party { display: flex; gap: calc(var(--u) * 3); }
+.slot { width: calc(var(--u) * 16); height: calc(var(--u) * 16); background: var(--panel); box-shadow: 0 0 0 var(--u) var(--line); position: relative; }
+.slot canvas { width: 100%; height: 100%; }
+.slot.locked canvas { filter: brightness(0); opacity: .5; }
+.slot.locked::after { content: "?"; position: absolute; inset: 0; display: grid; place-items: center; font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 6); color: var(--dim); }
+.slot.on { box-shadow: 0 0 0 var(--u) var(--gold), 0 0 0 calc(var(--u) * 2) var(--night); }
+#hearts { display: flex; gap: calc(var(--u) * 2); }
+#hearts canvas { width: calc(var(--u) * 10); height: calc(var(--u) * 10); }
+#hearts canvas.empty { opacity: .25; filter: grayscale(1); }
+.hud-r { position: absolute; right: calc(var(--u) * 6); top: calc(var(--u) * 4); display: flex; gap: calc(var(--u) * 8); align-items: center; text-shadow: var(--u) var(--u) 0 var(--night); }
+.ctr { display: flex; align-items: center; gap: calc(var(--u) * 3); font-size: calc(var(--u) * 12); }
+.ctr .i8 { width: calc(var(--u) * 8); height: calc(var(--u) * 8); }
+.ctr .i12 { width: calc(var(--u) * 12); height: calc(var(--u) * 8); }
+.ctr .i10 { width: calc(var(--u) * 10); height: calc(var(--u) * 10); }
+.hud-bl { position: absolute; left: calc(var(--u) * 6); bottom: calc(var(--u) * 5); font-size: calc(var(--u) * 9); color: var(--cero); display: flex; flex-direction: column; gap: calc(var(--u) * 1); text-shadow: var(--u) var(--u) 0 var(--night); }
+.hud-bl i { display: block; width: calc(var(--u) * 64); height: calc(var(--u) * 4); background: #2a0f3a; box-shadow: 0 0 0 var(--u) var(--night); }
+.hud-bl b { display: block; height: 100%; width: 0; background: var(--cero); transition: width .3s steps(4); }
+.hud-br { position: absolute; right: calc(var(--u) * 8); bottom: calc(var(--u) * 7); display: flex; gap: calc(var(--u) * 5); }
+.ab { width: calc(var(--u) * 20); height: calc(var(--u) * 20); background: var(--panel); box-shadow: 0 0 0 var(--u) var(--line); position: relative; display: grid; place-items: center; }
+.ab canvas { width: calc(var(--u) * 12); height: calc(var(--u) * 12); }
+.ab .k { position: absolute; right: calc(var(--u) * -4); bottom: calc(var(--u) * -4); font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 4.5); background: var(--ink); color: var(--panel); padding: calc(var(--u) * 1.2) calc(var(--u) * 1.5); }
+.ab .cd { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: rgba(7, 5, 26, .78); }
+.ab.locked { opacity: .28; }
+
+#hearts .p2tag { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 5); color: #2ee6d6; margin-left: calc(var(--u) * 4); align-self: center; }
+#bossbar { position: absolute; left: 50%; bottom: calc(var(--u) * 10); transform: translateX(-50%); width: calc(var(--u) * 200); text-align: center; text-shadow: var(--u) var(--u) 0 var(--night); }
+#bossbar span { display: block; font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 6); color: var(--ink); margin-bottom: calc(var(--u) * 2); }
+#bossbar i { display: block; height: calc(var(--u) * 6); background: #2a0f3a; box-shadow: 0 0 0 var(--u) var(--ink), 0 0 0 calc(var(--u) * 2) var(--night); }
+#bossbar b { display: block; height: 100%; width: 100%; background: linear-gradient(#ff4fa3, #e83b3b); transition: width .2s; }
+
+/* ---------- textos de ayuda ---------- */
+#hint { position: absolute; left: 50%; top: calc(var(--u) * 28); transform: translateX(-50%); max-width: calc(var(--u) * 300); text-align: center; background: rgba(22, 18, 46, .92); padding: calc(var(--u) * 3) calc(var(--u) * 8) calc(var(--u) * 4); font-size: calc(var(--u) * 11); box-shadow: 0 0 0 var(--u) var(--line); }
+#toast { position: absolute; left: 50%; top: calc(var(--u) * 50); transform: translateX(-50%); background: var(--gold); color: var(--panel); padding: calc(var(--u) * 2) calc(var(--u) * 8) calc(var(--u) * 3); font-size: calc(var(--u) * 11); white-space: nowrap; box-shadow: 0 calc(var(--u) * 2) 0 var(--night); }
+#prompt { position: absolute; left: 50%; bottom: calc(var(--u) * 34); transform: translateX(-50%); font-size: calc(var(--u) * 11); white-space: nowrap; text-shadow: var(--u) var(--u) 0 var(--night); background: rgba(7, 5, 26, .6); padding: calc(var(--u) * 2) calc(var(--u) * 6); }
+
+/* ---------- tarjetas y paneles ---------- */
+#card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 8); text-align: center; animation: cardIn .5s steps(5) both; }
+#cardTitle { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 13); color: var(--ink); text-shadow: calc(var(--u) * 2) calc(var(--u) * 2) 0 var(--cero), calc(var(--u) * 4) calc(var(--u) * 4) 0 var(--night); letter-spacing: var(--u); }
+#cardSub { font-size: calc(var(--u) * 15); color: var(--gold); text-shadow: var(--u) var(--u) 0 var(--night); }
+@keyframes cardIn { from { opacity: 0; transform: scale(1.3); } to { opacity: 1; transform: none; } }
+
+#panel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: calc(var(--u) * 270); background: var(--panel); padding: calc(var(--u) * 10) calc(var(--u) * 14) calc(var(--u) * 12); pointer-events: auto;
+  box-shadow: 0 0 0 var(--u) var(--ink), 0 0 0 calc(var(--u) * 2) var(--panel), 0 0 0 calc(var(--u) * 3) var(--line); }
+#panel h2 { font-family: "Press Start 2P", monospace; font-weight: 400; font-size: calc(var(--u) * 9); color: var(--gold); margin: 0 0 calc(var(--u) * 8); text-align: center; line-height: 1.5; }
+#panel .row { display: flex; justify-content: space-between; font-size: calc(var(--u) * 12); padding: calc(var(--u) * 1) 0; border-bottom: var(--u) dashed var(--line); }
+#panel .row b { font-weight: 400; color: var(--gold); }
+#panel p { font-size: calc(var(--u) * 11); color: var(--muted); margin: calc(var(--u) * 8) 0 0; text-align: center; }
+
+/* ---------- menú ---------- */
+#menu { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: calc(var(--u) * 150); max-width: calc(var(--u) * 300); background: var(--panel); padding: calc(var(--u) * 8) calc(var(--u) * 10); pointer-events: auto;
+  box-shadow: 0 0 0 var(--u) var(--ink), 0 0 0 calc(var(--u) * 2) var(--panel), 0 0 0 calc(var(--u) * 3) var(--line); }
+#menu.low { top: auto; bottom: calc(var(--u) * 16); transform: translateX(-50%); }
+#menu { max-height: calc(var(--u) * 196); overflow-y: auto; }
+#menu.wide { min-width: calc(var(--u) * 250); max-width: calc(var(--u) * 340); }
+#menu h3 { font-family: "Press Start 2P", monospace; font-weight: 400; font-size: calc(var(--u) * 7); color: var(--gold); margin: 0 0 calc(var(--u) * 6); line-height: 1.4; }
+#menu ul { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--u) * 2); }
+#menu li { font-size: calc(var(--u) * 12); padding: calc(var(--u) * 1) calc(var(--u) * 6) calc(var(--u) * 2) calc(var(--u) * 13); position: relative; cursor: pointer; color: var(--muted); }
+#menu li small { display: block; font-size: calc(var(--u) * 9.5); color: var(--dim); }
+#menu li.sel { color: var(--ink); background: var(--panel2); }
+#menu li.sel::before { content: "▶"; position: absolute; left: calc(var(--u) * 3); top: calc(var(--u) * 2); color: var(--gold); font-size: calc(var(--u) * 9); }
+#menu li.off { opacity: .4; }
+#menu .note { font-size: calc(var(--u) * 10); color: var(--dim); margin-top: calc(var(--u) * 6); }
+
+/* ---------- diálogo ---------- */
+#dialog { position: absolute; left: calc(var(--u) * 10); right: calc(var(--u) * 10); top: calc(var(--u) * 8); min-height: calc(var(--u) * 54); background: var(--panel); display: flex; gap: calc(var(--u) * 8); padding: calc(var(--u) * 7) calc(var(--u) * 10) calc(var(--u) * 8); pointer-events: auto;
+  box-shadow: 0 0 0 var(--u) var(--ink), 0 0 0 calc(var(--u) * 2) var(--panel), 0 0 0 calc(var(--u) * 3) var(--line); }
+#dlgFace { width: calc(var(--u) * 40) !important; height: calc(var(--u) * 40) !important; flex: none; background: var(--panel2); }
+#dialog.narr #dlgFace { display: none; }
+.dlg-body { min-width: 0; flex: 1; }
+#dlgName { font-family: "Press Start 2P", monospace; font-size: calc(var(--u) * 6); margin-bottom: calc(var(--u) * 4); letter-spacing: calc(var(--u) * .5); }
+#dlgText { font-size: calc(var(--u) * 13); line-height: 1.02; min-height: calc(var(--u) * 26); }
+#dialog.narr #dlgText { color: #d9d3f5; }
+#dialog.glitchy #dlgText { color: var(--cero); text-shadow: var(--u) 0 #2ee6d6, calc(var(--u) * -1) 0 #ff7a1a; animation: jitter .18s steps(2) infinite; }
+#dlgNext { position: absolute; right: calc(var(--u) * 6); bottom: calc(var(--u) * 3); font-size: calc(var(--u) * 9); color: var(--gold); animation: blink .8s steps(2) infinite; }
+@keyframes jitter { 50% { transform: translateX(var(--u)); } }
+
+/* ---------- controles táctiles ---------- */
+#touch { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+#touch button {
+  pointer-events: auto; touch-action: none; width: 100%; height: 100%; border-radius: 50%;
+  border: 2px solid rgba(243, 239, 255, .35); background: rgba(243, 239, 255, .12); color: var(--ink);
+  font: 12px "Press Start 2P", monospace; -webkit-tap-highlight-color: transparent;
+}
+#touch button.on { background: rgba(255, 210, 63, .45); }
+.pad-l { position: fixed; left: max(14px, env(safe-area-inset-left, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); }
+.pad-l [data-act="up"] { grid-column: 2; grid-row: 1; }
+.pad-l [data-act="left"] { grid-column: 1; grid-row: 2; }
+.pad-l [data-act="right"] { grid-column: 3; grid-row: 2; }
+.pad-l [data-act="down"] { grid-column: 2; grid-row: 3; }
+.pad-r { position: fixed; right: max(14px, env(safe-area-inset-right, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: repeat(3, 54px); grid-template-rows: repeat(3, 54px); }
+.pad-r .b-x { grid-column: 2; grid-row: 1; }
+.pad-r .b-y { grid-column: 1; grid-row: 2; }
+.pad-r .b-a { grid-column: 3; grid-row: 2; background: rgba(255, 210, 63, .2) !important; }
+.pad-r .b-b { grid-column: 2; grid-row: 3; }
+.pad-t { position: fixed; top: max(10px, env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+.pad-t button { width: 44px !important; height: 44px !important; font-size: 10px !important; }
+/* en celular los botones de pantalla ya muestran las habilidades */
+body.touch .hud-br { display: none; }
+body.touch .hud-bl { bottom: auto; top: calc(var(--u) * 40); }

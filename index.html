@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>SUPER SIMULATOR · Kazoo Studios</title>
+<meta name="description" content="El último Simulator de Kazoo Studios. Fase 1: El Paquete.">
+<meta name="theme-color" content="#07051a">
+<meta property="og:title" content="SUPER SIMULATOR">
+<meta property="og:description" content="El último Simulator de Kazoo Studios. Fase 1: El Paquete. +18">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%2307051a'/%3E%3Crect x='2' y='6' width='9' height='4' fill='%23ffd23f'/%3E%3Crect x='11' y='5' width='3' height='6' fill='%23ffd23f'/%3E%3Crect x='5' y='5' width='3' height='1' fill='%23ff2bd6'/%3E%3Crect x='3' y='7' width='7' height='1' fill='%23c79a12'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=11">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="384" height="216"></canvas>
+  <div id="ui">
+    <div id="titleLogo" hidden>
+      <div class="studio">KAZOO STUDIOS PRESENTA</div>
+      <div class="super"><span style="--i:0">S</span><span style="--i:1">U</span><span style="--i:2">P</span><span style="--i:3">E</span><span style="--i:4">R</span></div>
+      <div class="sim">SIMULATOR</div>
+      <div class="phase">FASE 1 · EL PAQUETE</div>
+      <div class="press" id="pressStart">PRESIONA START</div>
+    </div>
+    <div id="hud" hidden>
+      <div class="hud-l">
+        <div id="party"></div>
+        <div id="hearts"></div>
+      </div>
+      <div class="hud-r">
+        <div class="ctr"><canvas data-icon="coin" width="8" height="8" class="i8"></canvas><span id="feria">0</span></div>
+        <div class="ctr" id="kazBox"><canvas data-icon="gk" width="12" height="8" class="i12"></canvas><span id="kaz">0</span></div>
+        <div class="ctr"><canvas data-icon="photo" width="10" height="10" class="i10"></canvas><span id="fotos">0/20</span></div>
+        <div class="ctr" id="todoBox" hidden><canvas data-icon="todo" width="12" height="12" class="i10"></canvas><span id="todos"></span></div>
+      </div>
+      <div class="hud-bl" id="glitchBox"><span>GLITCHÓMETRO</span><i><b id="glitchBar"></b></i></div>
+      <div class="hud-br" id="abil"></div>
+    </div>
+    <div id="bossbar" hidden><span id="bossName"></span><i><b id="bossFill"></b></i></div>
+    <div id="hint" hidden></div>
+    <div id="toast" hidden></div>
+    <div id="prompt" hidden></div>
+    <div id="card" hidden><div id="cardTitle"></div><div id="cardSub"></div></div>
+    <div id="panel" hidden></div>
+    <div id="menu" hidden></div>
+    <div id="dialog" hidden>
+      <canvas id="dlgFace" width="16" height="16"></canvas>
+      <div class="dlg-body"><div id="dlgName"></div><div id="dlgText"></div></div>
+      <div id="dlgNext">▼</div>
+    </div>
+  </div>
+</div>
+<div id="touch" hidden>
+  <div class="pad-l">
+    <button type="button" data-act="up" aria-label="Arriba">▲</button>
+    <button type="button" data-act="left" aria-label="Izquierda">◀</button>
+    <button type="button" data-act="right" aria-label="Derecha">▶</button>
+    <button type="button" data-act="down" aria-label="Abajo">▼</button>
+  </div>
+  <div class="pad-r">
+    <button type="button" data-act="ability" class="b-x" aria-label="Habilidad">X</button>
+    <button type="button" data-act="special" class="b-y" aria-label="Especial">Y</button>
+    <button type="button" data-act="jump" class="b-a" aria-label="Saltar">A</button>
+    <button type="button" data-act="attack" class="b-b" aria-label="Ataque">B</button>
+  </div>
+  <div class="pad-t">
+    <button type="button" data-act="swapR" aria-label="Cambiar personaje">⇄</button>
+    <button type="button" data-act="pause" aria-label="Pausa">II</button>
+  </div>
+</div>
+<noscript><p style="color:#fff;padding:24px;font-family:monospace">Necesitas JavaScript para jugar SUPER SIMULATOR.</p></noscript>
+<script src="js/core.js?v=11"></script>
+<script src="js/audio.js?v=11"></script>
+<script src="js/gfx.js?v=11"></script>
+<script src="js/ui.js?v=11"></script>
+<script src="js/story.js?v=11"></script>
+<script src="js/world.js?v=11"></script>
+<script src="js/chars.js?v=11"></script>
+<script src="js/play.js?v=11"></script>
+<script src="js/bosses.js?v=11"></script>
+<script src="js/level0.js?v=11"></script>
+<script src="js/levels.js?v=11"></script>
+<script src="js/scenes.js?v=11"></script>
+<script src="js/drive.js?v=11"></script>
+<script src="js/minigames.js?v=11"></script>
+<script src="js/finale.js?v=11"></script>
+<script src="js/main.js?v=11"></script>
+</body>
+</html>
