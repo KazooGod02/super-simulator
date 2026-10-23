@@ -154,10 +154,12 @@
       const p1 = this.player, p2 = this.players[1];
       if (p2 && !p2.dead && !p1.dead && Math.abs(p2.cx - p1.cx) > W * 0.9) { p2.x = p1.x; p2.y = p1.y + p1.h - p2.h; p2.inv = 1; }
       if (this.arenaLock) for (const p of this.players) if (p) p.x = SS.clamp(p.x, this.arenaLock.x0, this.arenaLock.x1 - p.w);
-      for (const e of this.enemies) e.update(dt, this);
+      // en diálogos y escenas los enemigos y las balas se quedan congelados
+      const frozen = this.blocking();
+      if (!frozen) for (const e of this.enemies) e.update(dt, this);
       this.enemies = this.enemies.filter(e => !e.dead);
       for (const b of this.bosses) if (!b.dead || b.deathT > 0) b.update(dt, this);
-      this.updateShots(dt);
+      if (!frozen) this.updateShots(dt);
       for (const d of this.drops) {
         const vyBefore = d.vy;
         d.vy = Math.min(d.vy + 600 * dt, 400); d.vx *= 0.99;
@@ -269,7 +271,14 @@
       for (const b of this.bosses) if (!b.dead || b.deathT > 0) b.draw(ctx, cam);
       for (const s of this.shots) drawShot(ctx, s, cam, this.t);
       for (const s of this.eshots) drawEShot(ctx, s, cam, this.t);
-      for (const p of this.players) if (p && !p.dead) p.draw(ctx, cam);
+      for (const p of this.players) {
+        if (!p || p.dead) continue;
+        const s = this.charScale || 1;
+        if (s === 1) { p.draw(ctx, cam); continue; }
+        // escala desde los pies (la Kazoovan dibuja a los compas más grandes)
+        const fx = Math.round(p.cx - cam.x), fy = Math.round(p.y + p.h - cam.y);
+        ctx.save(); ctx.translate(fx, fy); ctx.scale(s, s); ctx.translate(-fx, -fy); p.draw(ctx, cam); ctx.restore();
+      }
       for (const b of this.blasts) {
         const r = 8 + b.t * (b.r || 64) * 1.8, x = b.x - cam.x, y = b.y - cam.y;
         ctx.globalAlpha = Math.max(0, 1 - b.t * 2);

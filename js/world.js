@@ -241,7 +241,7 @@
     }
     hurt(sc, fromX, dmg = 1) {
       if (this.inv > 0 || this.dead) return;
-      if (sc.godMode) return;
+      if (sc.godMode || (sc.blocking && sc.blocking())) return;
       this.hearts -= dmg;
       this.inv = 1.3; this.hurtT = 0.3; this.zip = null;
       this.vx = (this.cx < fromX ? -1 : 1) * 150; this.vy = -200;

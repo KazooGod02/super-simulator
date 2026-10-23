@@ -315,6 +315,7 @@
       this.radio = 0;
       this.tracks = ["van", "culiacan", "title", "drive", "glitch", "cesar", "jesus", "carlos", "daniel", "telenovela", "anime", "lucha", "prehistoria", "internet", "boss", "cero", "flash"];
       this.usedConsole = false;
+      this.charScale = 2;
     }
     enter() {
       SS.ui.showHud(true); SS.ui.resetHud();
@@ -443,6 +444,7 @@
     update(dt) {
       this.updateCommon(dt);
       this.cam.x = SS.clamp(this.cam.x, 0, 640 - W);
+      this.cam.y = 0; // el fondo de la van no se mueve en vertical
       this.interact(this.interactables());
       const x = this.player.cx;
       if (this.blocking()) SS.ui.hint(null);
@@ -473,8 +475,8 @@
       }
       // los compas en la camioneta
       const others = SS.save.party.filter(c => c !== this.player.char && ["kazoo", "cesar", "jesus", "carlos", "daniel"].includes(c));
-      const spots = [496, 522, 548, 470];
-      others.forEach((c, i) => { if (i < spots.length) SS.gfx.drawPerson(ctx, SS.gfx.SPECS[SS.CHARS[c].spec], "idle", Math.floor(t * 2 + i) % 2, spots[i] - cam.x, 128 - (i % 2) * 6 + (i === 3 ? 24 : 0), -1); });
+      const spots = [470, 500, 530, 440];
+      others.forEach((c, i) => { if (i < spots.length) SS.gfx.drawPerson(ctx, SS.gfx.SPECS[SS.CHARS[c].spec], "idle", Math.floor(t * 2 + i) % 2, spots[i] - cam.x, 128, -1, undefined, 2); });
       this.drawCommon(ctx);
     }
   }

@@ -127,7 +127,7 @@
       this.cars = [];
       if (this.track === "mocorito") {
         // los Senpais de Mocorito: tres carros rosas
-        for (let i = 0; i < 3; i++) this.cars.push({ z: this.playerZ + (3 + i * 4) * this.segLen, x: [-0.5, 0.4, 0][i], speed: this.maxSpeed * [0.9, 0.86, 0.82][i], img: "rival", rival: true });
+        for (let i = 0; i < 3; i++) this.cars.push({ z: this.playerZ + (3 + i * 4) * this.segLen, x: [-0.5, 0.4, 0][i], speed: this.maxSpeed * [0.74, 0.7, 0.66][i], img: "rival", rival: true });
       }
       if (this.track === "chase") this.van = { z: this.playerZ + 18 * this.segLen, x: 0, speed: this.maxSpeed * 0.86, hp: 6, throwT: 2, hitT: 0 };
     }
@@ -241,7 +241,8 @@
       const pz = this.position + this.playerZ;
       for (const c of this.cars) {
         const seg = this.findSeg(c.z);
-        c.z += c.speed * dt;
+        // si se escapan mucho te esperan tantito, para que la carrera siempre se pueda ganar
+        c.z += c.speed * (c.z - pz > this.segLen * 25 ? 0.75 : 1) * dt;
         c.x += (Math.sin(this.t * 0.7 + c.speed) * 0.3 - c.x) * dt * 0.5 - seg.curve * 0.002;
         c.x = SS.clamp(c.x, -0.8, 0.8);
         if (this.inv <= 0 && Math.abs(c.z - pz) < this.segLen * 0.8 && Math.abs(c.x - this.playerX) < 0.4) {
@@ -368,10 +369,11 @@
         x += dx; dx += s.curve;
         s.clip = maxy;
         if (s.p1.camera.z <= this.camDepth || s.p2.screen.y >= s.p1.screen.y || s.p2.screen.y >= maxy) continue;
-        this.drawSeg(ctx, s, g);
         maxy = s.p2.screen.y;
         drawn.push(s);
       }
+      // de atrás hacia adelante: si no, la arena de los tramos lejanos tapa la carretera
+      for (let i = drawn.length - 1; i >= 0; i--) this.drawSeg(ctx, drawn[i], g);
       // carros que se mueven: se acomodan en su segmento este cuadro
       for (const s of drawn) s.cars = null;
       const movers = this.cars.slice();
