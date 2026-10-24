@@ -276,7 +276,7 @@
       O(L, "terminal", 116, 11, { opens: [[119, 6, 119, 10]], msg: "César apagó el campo de fuerza" }); gate(L, 119, "G", [6, 10]);
       gate(L, 124, "V");
       O(L, "switch", 128, 5, { opens: [[131, 9, 131, 10]], msg: "Pancho picó el gong" }); nook(L, 131, 133, "G"); I(L, "photo", 132, 10, { name: "Las 31 figuras de Jesús, vivas" });
-      P(L, 126, 128, 8); I(L, "cart", 127, 6, { game: "grito" }); I(L, "gk", 120, 4); P(L, 120, 122, 7);
+      P(L, 126, 128, 8); I(L, "cart", 127, 6, { game: "grito" }); I(L, "gk", 120, 5); P(L, 120, 122, 8);
       S(L, 134);
       L.fill(160, 0, 160, 10, "W");
       L.boss = { type: "senpai", x0: 136, x1: 160, at: 139, floor: 11 };

@@ -129,7 +129,7 @@
         // los Senpais de Mocorito: tres carros rosas
         for (let i = 0; i < 3; i++) this.cars.push({ z: this.playerZ + (3 + i * 4) * this.segLen, x: [-0.5, 0.4, 0][i], speed: this.maxSpeed * [0.74, 0.7, 0.66][i], img: "rival", rival: true });
       }
-      if (this.track === "chase") this.van = { z: this.playerZ + 18 * this.segLen, x: 0, speed: this.maxSpeed * 0.86, hp: 6, throwT: 2, hitT: 0 };
+      if (this.track === "chase") this.van = { z: this.playerZ + 18 * this.segLen, x: 0, speed: this.maxSpeed * 0.78, hp: 3, throwT: 2, hitT: 0 };
     }
     lastY() { const s = this.segments; return s.length ? s[s.length - 1].p2.world.y : 0; }
     seg(curve, y) {
@@ -217,7 +217,7 @@
       SS.audio.music(this.track === "chase" ? "boss" : "drive");
       SS.ui.hint("{left}{right} manejar · {down} frenar · {ability} esquivar con la Kazoonita");
       if (this.track === "mocorito") { this.count = 99; const self = this; this.script = new SS.Script(function* () { yield SS.say([["narr", "Los Senpais de Mocorito te cierran el paso en tres carros rosas."], ["jesusPelon", "Si me ganan a Mocorito, los dejo pelear conmigo. Si no, se regresan a su dimensión."], ["kazoo", "Trato."]]); self.count = 3.2; }()); }
-      if (this.track === "chase") { this.count = 99; const self = this; this.script = new SS.Script(function* () { yield SS.say([["narr", "Cero maneja la Kazoovan robada. El equipo va atrás en un Tsuru prestado."], ["kazoo", "¡Embístanla seis veces y se detiene!"], ["cero", "Atrápenme si pueden. Les dejo regalitos en la carretera."]]); self.count = 3.2; }()); }
+      if (this.track === "chase") { this.count = 99; const self = this; this.script = new SS.Script(function* () { yield SS.say([["narr", "Cero maneja la Kazoovan robada. El equipo va atrás en un Tsuru prestado."], ["kazoo", "¡Embístanla tres veces y se detiene!"], ["cero", "Atrápenme si pueden. Les dejo regalitos en la carretera."]]); self.count = 3.2; }()); }
     }
     pauseItems() {
       if (this.replay || this.free) return [{ label: "Regresar a la Kazoovan", action: () => SS.go(() => SS.scenes.van({ fromDrive: true })) }];
@@ -254,17 +254,19 @@
         const v = this.van;
         v.hitT = Math.max(0, v.hitT - dt);
         const gap = v.z - pz;
-        v.speed = this.maxSpeed * (gap < this.segLen * 8 ? 0.98 : gap > this.segLen * 40 ? 0.7 : 0.86);
+        // si la rebasas, acelera para volver a ponerse enfrente
+        v.speed = this.maxSpeed * (gap < 0 ? 1.2 : gap < this.segLen * 8 ? 0.94 : gap > this.segLen * 30 ? 0.65 : 0.82);
         v.z += v.speed * dt;
         v.x += (Math.sin(this.t * 0.9) * 0.6 - v.x) * dt;
         v.throwT -= dt;
-        if (v.throwT <= 0) {
-          v.throwT = 1.6 + Math.random();
-          const seg = this.segments[Math.floor(v.z / this.segLen) - 2];
+        // solo avienta cajas cuando vas lejos: de cerca caían encima y no se podían esquivar
+        if (v.throwT <= 0 && gap > this.segLen * 18) {
+          v.throwT = 2.2 + Math.random();
+          const seg = this.segments[Math.floor(v.z / this.segLen)];
           if (seg) { seg.sprites.push({ img: sprites().box, offset: v.x + SS.rand(-0.3, 0.3), worldW: 260, kind: "solid" }); SS.audio.sfx("throw"); }
         }
-        if (v.hitT <= 0 && gap > 0 && gap < this.segLen * 1.2 && Math.abs(v.x - this.playerX) < 0.45) {
-          v.hp--; v.hitT = 1.2; v.z = pz + this.segLen * 14; this.speed *= 0.7;
+        if (v.hitT <= 0 && Math.abs(gap) < this.segLen * 1.5 && Math.abs(v.x - this.playerX) < 0.5) {
+          v.hp--; v.hitT = 1.2; v.z = pz + this.segLen * 25; this.speed *= 0.8;
           SS.audio.sfx("crash"); SS.shake = 8; this.fx.burst(W / 2, H / 2, 24, ["#ff2bd6", "#ffd23f", "#ffffff"], 140, 200, 0.7, 3);
           SS.ui.toast(v.hp > 0 ? `¡Le diste! Faltan ${v.hp}` : "¡La Kazoovan Oscura se detuvo!", 1.4);
           if (v.hp <= 0) this.finish(true, "¡Alcanzaste a Cero! Se metió corriendo a la Papelera");
@@ -319,7 +321,7 @@
           if (s.kind === "coin") { s.taken = true; SS.save.feria++; this.coins++; SS.audio.sfx("coin"); }
           else if (s.kind === "solid" && this.inv <= 0) {
             s.taken = true;
-            this.speed *= 0.3; this.hitT = 0.7; this.inv = 1;
+            this.speed *= this.van ? 0.5 : 0.3; this.hitT = 0.7; this.inv = 1;
             SS.save.glitch += 2; SS.shake = 6; SS.audio.sfx("crash");
             this.fx.burst(W / 2, H - 30, 20, ["#ff2bd6", "#9aa3b5", "#ffffff"], 120, 200, 0.6, 3);
           }
@@ -424,7 +426,7 @@
       const x1 = s.p1.screen.x, y1 = s.p1.screen.y, w1 = s.p1.screen.w, x2 = s.p2.screen.x, y2 = s.p2.screen.y, w2 = s.p2.screen.w;
       const d = s.dark;
       const glitchSeg = g > 0.3 && SS.hash(s.index * 1.7) < g * 0.12;
-      ctx.fillStyle = glitchSeg ? "#2a0f3a" : mix(d ? "#b8a47a" : "#c8b48a", d ? "#4a4659" : "#55525f", g);
+      ctx.fillStyle = mix(d ? "#b8a47a" : "#c8b48a", d ? "#4a4659" : "#55525f", g);
       ctx.fillRect(0, y2, W, y1 - y2 + 1);
       const poly = (ax, ay, bx, by, cx, cy, ddx, ddy, col) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.lineTo(cx, cy); ctx.lineTo(ddx, ddy); ctx.closePath(); ctx.fill(); };
       const r1 = w1 / 6, r2 = w2 / 6;
