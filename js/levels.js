@@ -446,6 +446,7 @@
     build() { const L = mk(24, 14, "void"); G(L, 0, 23); L.fill(0, 0, 0, 10, "W"); L.fill(23, 0, 23, 10, "W"); L.boss = { type: "cero", x0: 0, x1: 24, at: 5, floor: 11 }; return L; },
     respawnEnemies: false,
     endAtBoss: false,
+    bossInFree: true, // al repetirlo desde la Kazoovan se vuelve a pelear (para sacar otros finales)
     afterBoss(sc) { SS.finale.decision(sc); },
     onPlayerDied(sc) {
       const b = sc.bosses[0];

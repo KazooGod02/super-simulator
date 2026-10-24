@@ -353,7 +353,7 @@
       const sx = cp ? cp.x : (def.start ? def.start[0] * T : 2 * T), sy = cp ? cp.y : (def.start ? def.start[1] * T - 22 : (lv.h - 3) * T - 22);
       this.startPos = { x: sx, y: sy };
       this.addPlayer(sx, sy, 0);
-      if (lv.boss && this.free) lv.boss.skip = true;
+      if (lv.boss && this.free && !def.bossInFree) lv.boss.skip = true;
       for (const o of lv.objects) if (o.kind === "save" && cp && Math.abs(o.x - cp.x) < 4) o.lit = true;
       this.enemies = lv.spawns.map(s => new SS.Enemy(s[0], s[1] * T + 3, s[2] !== undefined ? s[2] * T : (lv.h - 3) * T, s[3] || {}));
       this.cam.x = SS.clamp(sx - W / 2, 0, lv.w * T - W);
