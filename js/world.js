@@ -142,7 +142,6 @@
       if (this.comboT <= 0) this.combo = 0;
       this.ghosts = this.ghosts.filter(g => (g.life -= dt) > 0);
       const control = !this.frozen && !this.dead && !sc.blocking();
-      const inverted = sc.invertControls && sc.invertControls();
 
       // escondido detrás de algo
       const hideObj = control && I.held("down") && this.onGround ? sc.findObj && sc.findObj(this, ["hide"], 14) : null;
@@ -157,7 +156,6 @@
 
       let dir = 0;
       if (control && !this.hidden) dir = (I.held("right") ? 1 : 0) - (I.held("left") ? 1 : 0);
-      if (inverted) dir = -dir;
       if (this.hurtT > 0) dir = 0;
       const run = I.held("run") || (this.idx === 0 && SS.input.autoRun);
       const maxV = (run ? 150 : 95) * (D.speed || 1);

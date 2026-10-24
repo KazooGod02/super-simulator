@@ -167,7 +167,7 @@
       guardar: { intro: [["narr", "El multiverso se está recargando. Si no llegan al punto de guardado, todo se reinicia."], ["kazoo", "¡Corran!"]] },
     },
     cero2: [["cero", "¿No les gusta el placeholder? Les pongo caras conocidas."]],
-    cero3: [["cero", "Error. Error. KAZOOVERSO.EXE no responde."], ["cesar", "¡Se le trabó! ¡Cuidado, los controles se van a voltear!"]],
+    cero3: [["cero", "Error. Error. KAZOOVERSO.EXE no responde."], ["cesar", "¡Se le trabó! ¡Cuidado con las ventanas de error que caen!"]],
     cero4: [["cero", "Ya sé lo que quiero. Quiero ser SUPER SIMULATOR. ¡Quiero ser los cinco juegos al mismo tiempo!"], ["kazoo", "Pues juguemos los cinco al mismo tiempo."]],
     decision: [["oozak", "...Ya. Volví a perder. Bórrenme. Supr. Así terminan los juegos como yo."], ["kazoo", "O te terminamos."], ["oozak", "¿Qué?"]],
     choseTerminar: [["kazoo", "Te vamos a poner final, oozaK. Color, música y créditos."], ["oozak", "...¿En serio?"], ["cesar", "Hasta te hackeo un menú de pausa."]],

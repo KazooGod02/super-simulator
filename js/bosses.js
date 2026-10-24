@@ -398,18 +398,24 @@
       const p = this.target();
       if (this.waiting) { this.vx = 0; return; }
       if (this.st === "intro") { if (this.stT <= 0) this.set("idle", 0.5); return; }
-      // fase 1: placeholder que copia tus movimientos con retraso
+      // fase 1: placeholder que copia tus movimientos con retraso. Ciclo fijo:
+      // 3.5 s te sigue (invencible, no hace daño al tocar, dispara con aviso) y 2.5 s se traba (¡pégale!)
       if (this.phase === 1) {
-        this.gravity = false; this.noTouch = false;
+        this.gravity = false;
         this.pauseT = (this.pauseT || 0) + dt;
         if (this.pauseT > 6) this.pauseT = 0;
-        const following = this.pauseT < 4.2;
-        if (!following && !this.saidPause) { this.saidPause = true; SS.ui.toast("Se trabó el placeholder: ¡pégale!", 1.2); }
+        const following = this.pauseT < 3.5;
+        if (!following && !this.saidPause) { this.saidPause = true; SS.ui.toast("Se trabó el placeholder: ¡pégale!", 1.2); SS.audio.sfx("glitch"); }
         if (following) this.saidPause = false;
-        this.invuln = following;
+        this.invuln = following; this.noTouch = true; // en esta fase solo lastiman las cajas
         this.trail.push({ x: p.x, y: p.y + p.h - this.h });
-        if (this.trail.length > 55) { const q = this.trail.shift(); if (following) { this.x = SS.lerp(this.x, q.x, 0.4); this.y = SS.lerp(this.y, q.y, 0.4); } }
-        if (following && Math.floor(this.t * 1.2) !== this.lastShot) { this.lastShot = Math.floor(this.t * 1.2); this.shot({ x: this.cx, y: this.cy, vx: (p.cx > this.cx ? 1 : -1) * 150, vy: 0, look: "box", w: 10, h: 10 }); }
+        if (this.trail.length > 55) { const q = this.trail.shift(); if (following) { this.x = SS.lerp(this.x, q.x, 0.15); this.y = SS.lerp(this.y, q.y, 0.15); } }
+        // una caja a la vez: la franja amarilla avisa la altura y entra desde la pared más lejana (se salta)
+        if (following && this.pauseT > 0.6 && this.pauseT < 3 && Math.floor(this.pauseT / 1.2) !== this.lastShot) {
+          this.lastShot = Math.floor(this.pauseT / 1.2);
+          const y = this.floorY - 9, fromL = p.cx > (this.ax0 + this.ax1) / 2;
+          this.warn(this.ax0, y - 5, this.ax1 - this.ax0, 10, 0.7, () => this.shot({ x: fromL ? this.ax0 : this.ax1 - 10, y: y - 5, vx: fromL ? 150 : -150, vy: 0, look: "box", w: 10, h: 10, ghost: true, life: 3 }), "#ffd23f");
+        }
         return;
       }
       // fase 2: se pone la cara de cada compa y usa sus ataques
@@ -432,16 +438,21 @@
         }
         return;
       }
-      // fase 3: pantalla azul
+      // fase 3: pantalla azul. Le llueven ventanas de error en columnas marcadas antes de caer
       if (this.phase === 3) {
         this.gravity = false; this.spec = null;
         this.y = SS.lerp(this.y, this.floorY - 62 + Math.sin(this.t * 2) * 14, 0.05);
         this.x += Math.sin(this.t * 0.9) * 60 * dt;
         if (this.st === "idle" && this.stT <= 0) {
-          this.set("idle", 0.9);
+          this.set("idle", 2.2);
+          // dos columnas de error: una donde estás y otra al azar
+          for (const cx of [p.cx, SS.rand(this.ax0 + 12, this.ax1 - 12)]) {
+            const x = SS.clamp(cx - 12, this.ax0, this.ax1 - 24);
+            this.warn(x, this.floorY - 170, 24, 170, 0.9, () => { this.shot({ x: x + 5, y: this.floorY - 170, vx: 0, vy: 220, look: "error", w: 14, h: 10, ghost: true, life: 1.2 }); SS.audio.sfx("bonk"); }, "#6fb7ff");
+          }
+          // y un disparo apuntado, más lento
           const a = Math.atan2(p.cy - this.cy, p.cx - this.cx);
-          this.shot({ x: this.cx, y: this.cy, vx: Math.cos(a) * 140, vy: Math.sin(a) * 140, look: "error", w: 14, h: 10, ghost: true, life: 3 });
-          SS.audio.sfx("bonk");
+          this.shot({ x: this.cx, y: this.cy, vx: Math.cos(a) * 110, vy: Math.sin(a) * 110, look: "error", w: 14, h: 10, ghost: true, life: 3 });
         }
         return;
       }

@@ -431,7 +431,7 @@
       S(L, 20, 16); O(L, "terminal", 4, 16, { makes: [[10, 13, 15, 13, "="]], msg: "César restauró un piso" }); O(L, "switch", 7, 12, { opens: [[11, 10, 14, 10]], msg: "Pancho abrió la tapa de la Papelera" });
       L.fill(11, 10, 14, 10, "G"); I(L, "todo", 17, 14, { text: "piso", id: "todo_pa_5" });
       // arena de arriba (la tapa se cierra al empezar)
-      I(L, "todo", 4, 8, { text: "jefe final", id: "todo_pa_6" }); I(L, "todo", 22, 8, { text: "otro jefe final", id: "todo_pa_7" }); I(L, "todo", 13, 4, { text: "la tapa", id: "todo_pa_8" }); I(L, "todo", 2, 59, { text: "esquina", id: "todo_pa_9" });
+      I(L, "todo", 4, 8, { text: "jefe final", id: "todo_pa_6" }); I(L, "todo", 22, 8, { text: "otro jefe final", id: "todo_pa_7" }); I(L, "todo", 13, 6, { text: "la tapa", id: "todo_pa_8" }); I(L, "todo", 2, 59, { text: "esquina", id: "todo_pa_9" });
       L.boss = { type: "genericos", x0: 1, x1: 25, atY: 10.2, floor: 10 };
       return L;
     },
@@ -453,19 +453,17 @@
       return false;
     },
     enter(sc) {
-      sc.invertControls = () => { const b = sc.bosses[0]; return b && !b.dead && b.phase === 3 && Math.floor(sc.t / 3) % 2 === 1; };
       sc.ceroPhase = (n, boss) => {
         sc.run(function* () {
           SS.ui.bossBar(null);
           yield SS.wait(0.6);
           yield SS.say(SS.TEXT["cero" + n]);
-          if (n === 3) { SS.ui.showHud(false); SS.audio.music("glitch"); }
-          if (n === 4) { SS.ui.showHud(true); SS.audio.music("cero"); }
+          if (n === 3) { SS.audio.music("glitch"); }
+          if (n === 4) { SS.audio.music("cero"); }
           boss.enterPhase(n);
         }());
       };
     },
-    hints(sc) { const b = sc.bosses[0]; if (b && b.phase === 3 && sc.invertControls()) return "¡Los controles están al revés!"; return null; },
     drawFront(sc, ctx) {
       const b = sc.bosses[0];
       if (b && b.phase === 3 && !b.dead) { if (Math.random() < 0.15) SS.tear(ctx, 8, 10); ctx.fillStyle = "rgba(31,63,191,.12)"; ctx.fillRect(0, 0, W, H); }
