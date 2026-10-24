@@ -476,7 +476,10 @@
       // jefe
       const B = lv.boss;
       if (B && !B.skip && !B.started && !this.bossDone && (B.atY !== undefined ? p.y + p.h < B.atY * T : p.cx > B.at * T) && !this.blocking()) this.startBoss();
-      if (this.bossActive && this.bosses.length && this.bosses.every(b => b.dead && !(b.deathT > 0))) this.finishBoss();
+      if (this.bossActive && this.bosses.length && this.bosses.every(b => b.dead && !(b.deathT > 0))) {
+        if (this.bossQueue && this.bossQueue.length) { this.bosses = [this.bossQueue.shift()()]; SS.ui.card(this.bosses[0].title || this.bosses[0].name, "JEFE", 1.6); }
+        else this.finishBoss();
+      }
       if (this.bossActive && this.bosses.length) { const alive = this.bosses.filter(b => !b.dead); const hp = alive.reduce((s, b) => s + Math.max(0, b.hp), 0), max = this.bosses.reduce((s, b) => s + b.maxHp, 0); SS.ui.bossBar(this.bosses[0].barName || this.bosses[0].name, hp / max); }
       this.def.update && this.def.update(this, dt);
       this.interact(this.interactables());

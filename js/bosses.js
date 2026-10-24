@@ -518,9 +518,9 @@
       case "algoritmo": return [new Algoritmo(sc, B, {})];
       case "genericos": {
         const mid = (B.x0 + B.x1) / 2 * T;
-        const list = [new CesarPro(sc, B, { x: mid - 120, hp: 14 }), new JesusPelon(sc, B, { x: mid - 50, hp: 14 }), new CarlosCallado(sc, B, { x: mid + 30, hp: 12 }), new DanielSonriente(sc, B, { x: mid + 100, hp: 14 })];
-        list.forEach((b, i) => { b.barName = "LAS VERSIONES GENÉRICAS"; b.stT = 1 + i * 0.7; });
-        return list;
+        // de uno en uno: GameLevel saca al siguiente cuando cae el anterior
+        sc.bossQueue = [() => new JesusPelon(sc, B, { x: mid, hp: 14 }), () => new CarlosCallado(sc, B, { x: mid, hp: 12 }), () => new DanielSonriente(sc, B, { x: mid, hp: 14 })];
+        return [new CesarPro(sc, B, { x: mid, hp: 14 })];
       }
       case "cero": return [new Cero(sc, B, {})];
     }

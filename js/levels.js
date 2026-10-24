@@ -436,6 +436,8 @@
       return L;
     },
     onBossStart(sc) { sc.level.fill(11, 10, 14, 10, "#"); },
+    // si mueres en la pelea, la tapa se vuelve a abrir para poder subir otra vez
+    onRespawn(sc) { if (!sc.bossDone) { const sw = sc.level.objects.find(o => o.kind === "switch"); sc.level.fill(11, 10, 14, 10, sw && sw.done ? "." : "G"); } },
     hints(sc) { return sc.player.y > 60 * T ? "Sube hasta la tapa de la Papelera. Cada piso necesita a un compa distinto" : null; },
   };
 
